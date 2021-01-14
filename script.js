@@ -11,11 +11,38 @@ let apiUrl = "https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceDat
 
 //create graph
 function showData(data){
-  chartData = data.data;
+  chartData = data.data;                                  //stores only the data portion of the incoming data from the fetch API
+  let tempData = chartData.reduce((total, item) => {      //takes the chartData and pulls only the gdp values
+    total.push(item[1]);
+    return total;
+  },[]);
+  const scale = d3.scaleLinear();                         //sets up scales
+  scale.domain = ([d3.min(tempData), d3.max(tempData)]);  //takes the min and max values to use for domain 
+  scale.range = ([100,20000])  
   console.log(chartData)
-  let width = 600;
+  let width = 1200;
   let height = 600;
 //start adding d3 elements
+const svg = d3.select(".visuals")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
+ 
+svg.selectAll("rect")
+  .data(chartData)
+  .enter()
+  .append('rect')
+  .attr("width", 5)
+  .attr("x", (d, i) => {
+    return (d,i*7)
+  })
+  .attr("y", (d, i) => {
+    return (height - d[1] / 10)
+  })
+  .attr('height', (d,i) => {
+    return(d[1]*3)
+  })
+
 
 }
 
